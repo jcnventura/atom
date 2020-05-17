@@ -178,7 +178,10 @@ class QubitTerm extends BaseTerm
     EXTERNAL_FILE_ID = 191,
 
     // Accession alternative identifier taxonomy
-    ACCESSION_ALTERNATIVE_IDENTIFIER_DEFAULT_TYPE_ID = 192;
+    ACCESSION_ALTERNATIVE_IDENTIFIER_DEFAULT_TYPE_ID = 192,
+
+    // Accession event type: physical transfer
+    ACCESSION_EVENT_PHYSICAL_TRANSFER_ID = 193;
 
   public static function isProtected($id)
   {

@@ -226,4 +226,22 @@ class QubitAccession extends BaseAccession
 
     return $otherNames;
   }
+
+  /**
+   * Get events
+   */
+  public function getEvents()
+  {
+    $events = [];
+
+    $criteria = new Criteria;
+    $criteria->add(QubitAccessionEvent::ACCESSION_ID, $this->id);
+
+    foreach (QubitAccessionEvent::get($criteria) as $event)
+    {
+      $events[] = $event;
+    }
+
+    return $events;
+  }
 }

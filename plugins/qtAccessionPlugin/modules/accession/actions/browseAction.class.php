@@ -117,6 +117,7 @@ class AccessionBrowseAction extends sfAction
         'i18n.%s.physicalCharacteristics',
         'i18n.%s.receivedExtentUnits',
         'alternativeIdentifiers.i18n.%s.name',
+        'alternativeIdentifiers.i18n.%s.note',
         'creators.i18n.%s.authorizedFormOfName'), null, $boost);
 
       $fields[] = 'identifier^10';

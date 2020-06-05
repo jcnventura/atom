@@ -113,6 +113,8 @@ class arElasticSearchAccession extends arElasticSearchModelBase
       $serialized['creators'][] = $node->serialize();
     }
 
+    $serialized['accessionEvents'] = self::getAccessionEvents($id);
+
     return $serialized;
   }
 
@@ -123,5 +125,41 @@ class arElasticSearchAccession extends arElasticSearchModelBase
     QubitSearch::getInstance()->addDocument($data, 'QubitAccession');
 
     return true;
+  }
+
+  public static function getAccessionEvents($id)
+  {
+    $sql  = 'SELECT
+               event.id,
+               event.type_id,
+               event.accession_id,
+               event.date,
+               event.created_at,
+               event.updated_at,
+               event.source_culture,
+               i18n.agent,
+               i18n.culture';
+    $sql .= ' FROM '.QubitAccessionEvent::TABLE_NAME.' event';
+    $sql .= ' JOIN '.QubitAccessionEventI18n::TABLE_NAME.' i18n
+                    ON event.id = i18n.id';
+    $sql .= ' WHERE event.accession_id = ?';
+
+    self::$statements['event'] = self::$conn->prepare($sql);
+    self::$statements['event']->execute(array($id));
+
+    $events = array();
+    foreach (self::$statements['event']->fetchAll(PDO::FETCH_OBJ) as $item)
+    {
+      $event = array(
+        'id' => $item->id,
+        'typeId' => $item->type_id,
+        'date' => $item->date);
+
+      $event['i18n'] = arElasticSearchModelBase::serializeI18ns($item->id, array('QubitAccessionEvent'));
+
+      $events[] = $event;
+    }
+
+    return $events;
   }
 }

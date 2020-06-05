@@ -117,7 +117,9 @@ class AccessionBrowseAction extends sfAction
         'i18n.%s.physicalCharacteristics',
         'i18n.%s.receivedExtentUnits',
         'alternativeIdentifiers.i18n.%s.name',
-        'creators.i18n.%s.authorizedFormOfName'), null, $boost);
+        'creators.i18n.%s.authorizedFormOfName',
+        'accessionEvents.date',
+        'accessionEvents.i18n.%s.agent'), null, $boost);
 
       $fields[] = 'identifier^10';
       $fields[] = 'donors.contactInformations.contactPerson';

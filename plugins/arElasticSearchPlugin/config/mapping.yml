@@ -79,11 +79,10 @@ mapping:
       i18n: true
       nested_only: true
     dynamic: strict
-    type: nested
     properties:
       accession_id: { type: integer, include_in_all: false }
       type_id: { type: integer, include_in_all: false }
-      date: { type: date, include_in_all: false }
+      date: { type: date, include_in_all: true }
 
   donor:
     _attributes:

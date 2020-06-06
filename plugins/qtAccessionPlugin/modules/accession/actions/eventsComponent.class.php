@@ -45,15 +45,16 @@ class AccessionEventsComponent extends sfComponent
 
     foreach ($this->resource->getEvents() as $event)
     {
+      $property = $event->getPropertyByName('accessionEventNote');
+
       $this->eventData[] = [
         'id' => $event->id,
         'typeId' => $event->typeId,
         'date' => $event->getDate(['sourceCulture' => true]),
         'agent' => $event->getAgent(),
+        'note' => $property->value,
         'accessionId' => $this->resource->id
       ];
-
-// 'note' => $event->getNote(),
     }
   }
 
@@ -118,8 +119,23 @@ class AccessionEventsComponent extends sfComponent
         $event->typeId = $item['eventType'];
         $event->date = empty($item['date']) ? null : $item['date'];
         $event->agent = $item['agent'];
-        #$event->note = $item['note'];
         $event->save();
+
+        // Store note
+        if (null !== $property = $event->getPropertyByName('accessionEventNote'))
+        {
+# TODO: i18n
+          $property->value = $item['note'];
+        }
+        else
+        {
+          $property = new QubitProperty;
+          $property->objectId = $event->id;
+          $property->name = 'accessionEventNote';
+          $property->value = $item['note'];
+        }
+
+        $property->save();
       }
     }
 

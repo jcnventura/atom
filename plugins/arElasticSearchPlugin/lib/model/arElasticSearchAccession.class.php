@@ -138,28 +138,51 @@ class arElasticSearchAccession extends arElasticSearchModelBase
                event.updated_at,
                event.source_culture,
                i18n.agent,
-               i18n.culture';
-    $sql .= ' FROM '.QubitAccessionEvent::TABLE_NAME.' event';
-    $sql .= ' JOIN '.QubitAccessionEventI18n::TABLE_NAME.' i18n
-                    ON event.id = i18n.id';
-    $sql .= ' WHERE event.accession_id = ?';
+               i18n.culture
+             FROM '.QubitAccessionEvent::TABLE_NAME.' event
+             JOIN '.QubitAccessionEventI18n::TABLE_NAME.' i18n
+             ON event.id = i18n.id
+             WHERE event.accession_id = ?';
 
     self::$statements['event'] = self::$conn->prepare($sql);
     self::$statements['event']->execute(array($id));
 
     $events = array();
-    foreach (self::$statements['event']->fetchAll(PDO::FETCH_OBJ) as $item)
+    foreach (self::$statements['event']->fetchAll(PDO::FETCH_ASSOC) as $item)
     {
       $event = array(
-        'id' => $item->id,
-        'typeId' => $item->type_id,
-        'date' => $item->date);
+        'id' => $item['id'],
+        'typeId' => $item['type_id'],
+        'date' => $item['date']);
 
+      $event['note'] = self::getAccessionEventNote($item['id']);
       $event['i18n'] = arElasticSearchModelBase::serializeI18ns($item->id, array('QubitAccessionEvent'));
 
       $events[] = $event;
     }
 
     return $events;
+  }
+
+  public static function getAccessionEventNote($eventId)
+  {
+    $sql = "SELECT id, source_culture FROM property
+              WHERE name='accessionEventNote'
+              AND object_id=?
+              LIMIT 1";
+
+    self::$statements['property'] = self::$conn->prepare($sql);
+    self::$statements['property']->execute(array($eventId));
+
+    $noteData = null;
+    if ($item = self::$statements['property']->fetch(PDO::FETCH_ASSOC))
+    {
+      $property = new stdClass;
+      $property->id = $item['id'];
+      $property->source_culture = $item['source_culture'];
+      $noteData = arElasticSearchProperty::serialize($property);
+    }
+
+    return $noteData;
   }
 }

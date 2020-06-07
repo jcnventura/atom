@@ -78,7 +78,8 @@ mapping:
     _attributes:
       i18n: true
       nested_only: true
-    dynamic: strict
+    _foreign_types: { note: property }
+    dynamic: true
     properties:
       accession_id: { type: integer, include_in_all: false }
       type_id: { type: integer, include_in_all: false }

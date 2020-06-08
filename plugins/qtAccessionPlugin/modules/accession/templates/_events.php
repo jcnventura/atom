@@ -34,7 +34,7 @@
             </div>
             <div class="animateNicely">
               <?php $form->setDefault('note', $event['note']); ?>
-              <?php echo render_field($form->note, $event['object']) ?>
+              <?php echo render_field($form->note, $event['note'], array('name' => 'value')) ?>
             </div>
           </td>
         </tr>

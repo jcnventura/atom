@@ -52,7 +52,7 @@ class AccessionEventsComponent extends sfComponent
         'typeId' => $event->typeId,
         'date' => $event->getDate(['sourceCulture' => true]),
         'agent' => $event->getAgent(),
-        'note' => $property->value,
+        'note' => $property,
         'accessionId' => $this->resource->id
       ];
     }

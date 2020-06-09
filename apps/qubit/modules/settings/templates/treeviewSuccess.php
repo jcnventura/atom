@@ -85,11 +85,21 @@
         </div>
 
         <p>
+            <?php echo $form->fullPaging
+              ->label(__('Limit items per page'))
+              ->help(__('Limits the number of items initially shown per level in
+                the treeview, to improve page load times for large collections'))
+              ->renderRow() ?>
+        </p>
+
+        <p>
             <?php echo $form->fullItemsPerPage
               ->label(__('Items per page'))
               ->help(__('Items per page can be a minimum of 10 and a maximum of 1000'))
               ->renderRow() ?>
         </p>
+
+
 
       </fieldset>
 

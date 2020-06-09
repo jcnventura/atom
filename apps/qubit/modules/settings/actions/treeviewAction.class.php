@@ -29,6 +29,7 @@ class SettingsTreeviewAction extends DefaultEditAction
       'showIdentifier',
       'showLevelOfDescription',
       'showDates',
+      'fullPaging',
       'fullItemsPerPage');
 
   protected function earlyExecute()
@@ -119,10 +120,34 @@ class SettingsTreeviewAction extends DefaultEditAction
 
         break;
 
+      case 'fullPaging':
+        $this->fullPagingSetting = QubitSetting::getByName('treeview_full_paging');
+
+        $default = 'yes';
+        $options = array(
+          'no' => $this->i18n->__('No'),
+          'yes' => $this->i18n->__('Yes')
+        );
+
+        $this->addSettingRadioButtonsField($this->fullPagingSetting, $name, $default, $options);
+
+        break;
+
       case 'fullItemsPerPage':
         $this->fullItemsPerPageSetting = QubitSetting::getByName('treeview_full_items_per_page');
 
         $default = 50;
+
+        $attrs = [];
+        if (
+          isset($this->fullPagingSetting)
+          && $this->fullPagingSetting->getValue(['sourceCulture' => true]) == 'yes'
+        )
+        {
+          echo "BOOYA!";
+          $attrs = ['disabled' => true];
+        }
+
         if (isset($this->fullItemsPerPageSetting))
         {
           $default = $this->fullItemsPerPageSetting->getValue(array('sourceCulture' => true));
@@ -130,7 +155,7 @@ class SettingsTreeviewAction extends DefaultEditAction
         $this->form->setDefault($name, $default);
 
         $this->form->setValidator($name, new sfValidatorInteger(array('min' => 10, 'max' => 1000)));
-        $this->form->setWidget($name, new sfWidgetFormInput);
+        $this->form->setWidget($name, new sfWidgetFormInput, $attrs);
 
         break;
     }
@@ -185,6 +210,11 @@ class SettingsTreeviewAction extends DefaultEditAction
 
       case 'showDates':
         $this->createOrUpdateSetting($this->showDatesSetting, 'treeview_show_dates', $field->getValue());
+
+        break;
+
+      case 'fullPaging':
+        $this->createOrUpdateSetting($this->fullPagingSetting, 'treeview_full_paging', $field->getValue());
 
         break;
 

@@ -70,7 +70,8 @@ class AccessionEventsComponent extends sfComponent
 
       case 'date':
         $this->form->setValidator($name, new sfValidatorString);
-        $this->form->setWidget($name, new sfWidgetFormInput);
+        $widget = new sfWidgetFormInput(['label' => false]);  
+        $this->form->setWidget($name, $widget);
 
         break;
 
